@@ -168,8 +168,8 @@ RUN echo "START: Do Zsh Installation" && \
     #
     # {{ 000. [plugin dependency] for [sql.lua|https://github.com/kkharji/sqlite.lua]
     #
-        luarocks install sqlite
-        luarocks install luv
+        luarocks install sqlite && \
+        luarocks install luv && \
     #
     # }}
     #
