@@ -10,4 +10,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
-          args: --check --config-path=config/nvim/stylua.toml ./lua
+          args: --check --config-path=./stylua.toml ./lua
