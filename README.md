@@ -2,8 +2,6 @@
     NVIM Config
 </h1>
 
-# nvim
-
 <p align="center">
   <img src="https://github.com/double12gzh/nvim/raw/main/.github/images/startup.png"
   width = "70%"
