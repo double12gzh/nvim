@@ -1,0 +1,225 @@
+From debian:stable
+
+LABEL Author="Jeffrey Guan"
+
+ENV LC_CTYPE=zh_CN.UTF-8
+ENV LC_ALL=en_US.utf8
+ENV LANGUAGE=en_US:en
+ENV LANG=en_US.utf8
+
+ENV GOPATH="/root/.go"
+ENV GO_VERSION="1.18.9"
+ENV GOPROXY="https://goproxy.cn"
+
+ARG NODEJS_VERSION="19"
+
+ENV NVIM_VERSION="v0.8.1"
+
+ENV PYTHON3_HOST_PROG="/usr/bin/python3"
+ENV PATH=/usr/local/nvim-linux64/bin:/root/go/bin:/root/.local/bin:/usr/local/go/bin:/root/.go/bin:/root/.cargo/bin:$PATH
+
+RUN mkdir -p /root/.config && \
+    mkdir -p /root/.go/bin && \
+    mkdir -p /home/.nvim_app && \
+    mkdir -p /usr/share/fonts/truetype
+
+WORKDIR /home/.nvim_app
+
+COPY ["fonts/Operator Mono Lig", "/usr/share/fonts/Operator Mono Lig"]
+COPY fonts/Hack /usr/share/fonts/truetype/hack
+
+RUN apt-get clean all && apt-get update && apt-get install --no-install-recommends -y \
+    #
+    # {{ base
+    #
+        apt-transport-https \
+        autoconf \
+        automake \
+        bash \
+        build-essential \
+        cmake \
+        curl \
+        fontconfig \
+        fzf \
+        gcc \
+        g++ \
+        git \
+        libreadline-dev \
+        locales \
+        make \
+        npm \
+        pkg-config \
+        python3 \
+        ripgrep \
+        ruby-dev \
+        rubygems \
+        shellcheck \
+        yarn \
+        wget \
+        unzip \
+    #
+    # }}
+    #
+    #
+    # {{ 000. [plugin dependency] Latext
+        latexmk texlive-fonts-extra texlive-fonts-recommended texlive-latex-extra \
+    # }}
+    #
+    # {{ 000. [plugin dependency] c/cpp/rust program debugger
+        lldb \
+    # }}
+    #
+    # {{ 000. [plugin dependency] for [sql.lua|https://github.com/kkharji/sqlite.lua]
+        sqlite3 libsqlite3-dev \
+    # }}
+    #
+    # {{ 111. [neovim provider] python
+        python3-neovim python3-dev python3-pip \
+    # }}
+    zsh && \ 
+    #
+    ############# END apt-get install ##############
+    #
+    # {{ 111. [neovim provider] node
+        npm install npm@latest --location=global && \
+        curl -fsSL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x | bash - && apt install nodejs --no-install-recommends -y && \
+        rm -rf /var/lib/apt/lists/* && \
+        curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash && \
+        echo "END: Base Installation"
+    # }}
+
+#
+# {{ zsh
+#
+RUN echo "START: Do Zsh Installation" && \
+    echo "export PATH=$PATH" >> /root/.config/zsh/zshrc && \
+    CHSH=yes;RUNZSH=no;KEEP_ZSHRC=yes; sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && rm -rf /root/.zshrc && \
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
+    curl -sfL https://direnv.net/install.sh | bash && \
+    touch /root/.dircolors && \
+    echo "END: Do Zsh Installation" && \
+#
+# }} 
+#
+# {{ nvim installation
+#
+    echo "START: Do Nvim Installation" && \
+    wget -O /tmp/nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux64.tar.gz && \
+    tar -zxf /tmp/nvim-linux64.tar.gz -C /usr/local/ && chmod a+x /usr/local/nvim-linux64/bin/nvim && rm -rf /tmp/nvim-linux64.tar.gz && \
+    echo "END: Do Nvim Installation" && \
+#
+# }}
+#
+# {{ nvim dependency
+#
+    echo "START: Do Nvim Dependencies Installation" && \
+    pip3 install --user pep8 black isort beautysh rich klepto wheel && \
+    # 
+    # {{ 111. [neovim provider] python
+        pip3 install --user pynvim && pip3 install --upgrade pynvim && \
+    # }}
+    #
+    # {{ go
+        wget -O go.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
+        tar -xzf go.tar.gz -C /usr/local/ && rm -rf go.tar.gz && \
+    #
+    # }}
+    #
+    # {{ rust
+        curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+    #
+    # }}
+    #
+    # {{ 111. [neovim provider] perl
+        wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && \
+        # or cpanm -n App::cpanminus --mirror http://mirrors.163.com/cpan --mirror-only
+        cpanm -n Neovim::Ext --quiet && \
+        cpanm -n App::cpanminus --quiet && \
+    # }}
+    #
+    # {{ 111. [neovim provider] ruby
+        gem install neovim && \
+    # }}
+    #
+    echo "END: Do Nvim Dependencies Installation" && \
+# }}
+#
+# {{ lua
+#
+    echo "START: Do Lua/Luarocks Installation" && \
+    #
+    # {{ lua
+    #
+        curl -R -O http://www.lua.org/ftp/lua-5.3.5.tar.gz && \
+        tar -zxf lua-5.3.5.tar.gz && rm -rf lua-5.3.5.tar.gz && \
+        cd lua-5.3.5 && make linux test && make install && cd - && \
+    #
+    # }}
+    #
+    # {{ luarocks
+    #
+        wget https://luarocks.org/releases/luarocks-3.8.0.tar.gz && \
+        tar zxpf luarocks-3.8.0.tar.gz && rm -rf luarocks-3.8.0.tar.gz && \
+        cd luarocks-3.8.0 && ./configure --with-lua-include=/usr/local/include && make && make install && cd - && \
+        localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
+        chmod 777 /usr/share/fonts/truetype/hack/*.ttf && \
+    #
+    # }}
+    #
+    # {{ 000. [plugin dependency] for [sql.lua|https://github.com/kkharji/sqlite.lua]
+    #
+        luarocks install sqlite
+        luarocks install luv
+    #
+    # }}
+    #
+    # {{ 111. [neovim provider] node
+        npm install -g neovim && \
+    # }}
+    #
+    # {{ 000. [plugin dependency] [markdown-preview|https://github.com/iamcco/markdown-preview.nvim]
+        npm install -g tslib && \ 
+    # }}
+    #
+    echo "END: Do Lua/Luarocks Installation" && \
+#
+# }}
+#
+# {{ nvim configuration
+    echo "START: Do Nvim Config" && \
+    cargo install stylua && \
+    cargo install cbfmt && \
+    cargo install tree-sitter-cli && \
+    cargo install fd-find && \
+    go install mvdan.cc/sh/v3/cmd/shfmt@latest && \
+    go install github.com/jesseduffield/lazygit@latest && \
+    luarocks install luautf8 && \
+    npm install -g @fsouza/prettierd && \
+    npm install -g eslint_d && \
+    npm install -g write-good && \
+    npm install -g yarn && \
+    npm install -g markdownlint --save-dev && \
+    echo "node version: " && node -v && \
+    echo "END: Do Nvim Config" && \
+#
+# }}
+#
+# {{ nvim plugins installation
+    echo "START: Do Plugins Installation" && \
+    git clone --depth 1  https://github.com/double12gzh/nvim.git $HOME/.config/nvim && \
+    rm -rf /root/.config/nvim/.git && rm -rf /root/.config/nvim/.github && rm -rf /root/.config/nvim/fonts && \
+    git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/opt/packer.nvim && \
+    git clone https://github.com/sainnhe/gruvbox-material.git ~/.local/share/nvim/site/pack/packer/start/gruvbox-material && \
+    nvim --headless -c "autocmd User PackerComplete quitall" -c "PackerSync" && \
+    echo "END: Do Plugins Installation" && \
+# }}
+#
+# {{ others
+    # gem proxy
+    gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/ && \
+    echo "- Enjoy It -"
+#
+#}}
+#
+
+CMD ["zsh"]
