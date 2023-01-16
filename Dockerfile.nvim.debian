@@ -62,7 +62,7 @@ RUN apt-get clean all && apt-get update && apt-get install --no-install-recommen
     #
     #
     # {{ 000. [plugin dependency] Latext
-        latexmk texlive-fonts-extra texlive-fonts-recommended texlive-latex-extra \
+        #latexmk texlive-fonts-extra texlive-fonts-recommended texlive-latex-extra \
     # }}
     #
     # {{ 000. [plugin dependency] c/cpp/rust program debugger
