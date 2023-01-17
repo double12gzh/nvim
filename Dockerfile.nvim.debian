@@ -29,7 +29,9 @@ COPY ["fonts/Operator Mono Lig", "/usr/share/fonts/Operator Mono Lig"]
 COPY fonts/Hack /usr/share/fonts/truetype/hack
 
 RUN echo "=============== START: Base Installation ==================" && \
-    apt-get clean all && apt-get update && apt-get install --no-install-recommends -y \
+    apt-get clean all && \
+    apt-get update && \
+    apt-get install --no-install-recommends -y \
     apt-transport-https \
     autoconf \
     automake \
@@ -66,20 +68,27 @@ RUN echo "=============== START: Base Installation ==================" && \
 
 RUN echo "=============== START: install npm provider ===============" && \
     npm install npm@latest --location=global && \
-    curl -fsSL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x | bash - && apt install nodejs --no-install-recommends -y && \
+    curl -fsSL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x | bash - && \
+    apt install nodejs --no-install-recommends -y && \
     rm -rf /var/lib/apt/lists/* && \
-    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash && echo "export PATH=$PATH" >> /root/.bashrc && \
+    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash && \
+    echo "export PATH=$PATH" >> /root/.bashrc && \
     #echo "===========================================================" && \
     #echo "================ START: Do Zsh Installation ===============" && \
     #echo "===========================================================" && \
-    CHSH=yes;RUNZSH=no;KEEP_ZSHRC=yes; sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
+    CHSH=yes;RUNZSH=no;KEEP_ZSHRC=yes; \
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
+    git clone https://github.com/zsh-users/zsh-autosuggestions \
+        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
     curl -sfL https://direnv.net/install.sh | bash && touch /root/.dircolors && \
     #echo "===========================================================" && \
     #echo "================ START: Do Nvim Installation ==============" && \
     #echo "===========================================================" && \
-    wget -O /tmp/nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux64.tar.gz && \
-    tar -zxf /tmp/nvim-linux64.tar.gz -C /usr/local/ && chmod a+x /usr/local/nvim-linux64/bin/nvim && rm -rf /tmp/nvim-linux64.tar.gz && \
+    wget -O /tmp/nvim-linux64.tar.gz \
+        https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux64.tar.gz && \
+    tar -zxf /tmp/nvim-linux64.tar.gz -C /usr/local/ && \
+    chmod a+x /usr/local/nvim-linux64/bin/nvim && \
+    rm -rf /tmp/nvim-linux64.tar.gz && \
     #echo "===========================================================" && \
     #echo "================ START: Install rust ======================" && \
     #echo "===========================================================" && \
@@ -87,7 +96,8 @@ RUN echo "=============== START: install npm provider ===============" && \
     #echo "===========================================================" && \
     #echo "================ START: Install go ========================" && \
     #echo "===========================================================" && \
-    wget -O go.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz && tar -xzf go.tar.gz -C /usr/local/ && rm -rf go.tar.gz && \
+    wget -O go.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
+    tar -xzf go.tar.gz -C /usr/local/ && rm -rf go.tar.gz && \
     #echo "===========================================================" && \
     #echo "================ START: Install Dependencies ==============" && \
     #echo "===========================================================" && \
@@ -99,7 +109,10 @@ RUN echo "=============== START: install npm provider ===============" && \
     #echo "===========================================================" && \
     #echo "================ START: install [neovim provider] perl ====" && \
     #echo "===========================================================" && \
-    wget http://xrl.us/cpanm -O /usr/bin/cpanm && chmod +x /usr/bin/cpanm && cpanm -n Neovim::Ext --quiet && cpanm -n App::cpanminus --quiet && \
+    wget http://xrl.us/cpanm -O /usr/bin/cpanm && \
+    chmod +x /usr/bin/cpanm && \
+    cpanm -n Neovim::Ext --quiet && \
+    cpanm -n App::cpanminus --quiet && \
     #echo "===========================================================" && \
     #echo "================ START: install [neovim provider] ruby ====" && \
     #echo "===========================================================" && \
@@ -107,13 +120,20 @@ RUN echo "=============== START: install npm provider ===============" && \
     #echo "===========================================================" && \
     #echo "================ START: install lua =======================" && \
     #echo "===========================================================" && \
-    curl -R -O http://www.lua.org/ftp/lua-5.3.5.tar.gz && tar -zxf lua-5.3.5.tar.gz && rm -rf lua-5.3.5.tar.gz && cd lua-5.3.5 && make linux test && make install && cd - && \
+    curl -R -O http://www.lua.org/ftp/lua-5.3.5.tar.gz && \
+    tar -zxf lua-5.3.5.tar.gz && \
+    rm -rf lua-5.3.5.tar.gz && \
+    cd lua-5.3.5 && make linux test && make install && cd - && \
     #echo "===========================================================" && \
     #echo "================ START: install luarocks ==================" && \
     #echo "===========================================================" && \
-    wget https://luarocks.org/releases/luarocks-3.8.0.tar.gz && tar zxpf luarocks-3.8.0.tar.gz && rm -rf luarocks-3.8.0.tar.gz && \
-    cd luarocks-3.8.0 && ./configure --with-lua-include=/usr/local/include && make && make install && cd - && \
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && chmod 777 /usr/share/fonts/truetype/hack/*.ttf && \
+    wget https://luarocks.org/releases/luarocks-3.8.0.tar.gz && \
+    tar zxpf luarocks-3.8.0.tar.gz && rm -rf luarocks-3.8.0.tar.gz && \
+    cd luarocks-3.8.0 && \
+    ./configure --with-lua-include=/usr/local/include && \
+    make && make install && cd - && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
+    chmod 777 /usr/share/fonts/truetype/hack/*.ttf && \
     #echo "===========================================================" && \
     #echo "================ START: plugin dependency for sql.lua =====" && \
     #echo "===========================================================" && \
@@ -139,16 +159,19 @@ RUN echo "=============== START: install npm provider ===============" && \
     npm install -g @fsouza/prettierd && \
     npm install -g eslint_d && \
     npm install -g write-good && \
-    npm install -g markdownlint --save-dev && \
-    #echo "===========================================================" && \
-    #echo "================ START: install plugins ===================" && \
-    #echo "===========================================================" && \
-    git clone --depth 1  https://github.com/double12gzh/nvim.git $HOME/.config/nvim && \
-    rm -rf /root/.config/nvim/.git && rm -rf /root/.config/nvim/.github && rm -rf /root/.config/nvim/fonts && \
-    git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/opt/packer.nvim && \
-    git clone https://github.com/sainnhe/gruvbox-material.git ~/.local/share/nvim/site/pack/packer/start/gruvbox-material && \
+    npm install -g markdownlint --save-dev
+
+RUN git clone --depth 1 https://github.com/double12gzh/nvim.git \
+        $HOME/.config/nvim && \
+    rm -rf /root/.config/nvim/.git && \
+    rm -rf /root/.config/nvim/.github && \
+    rm -rf /root/.config/nvim/fonts && \
+    git clone --depth 1 https://github.com/wbthomason/packer.nvim \
+        ~/.local/share/nvim/site/pack/packer/opt/packer.nvim && \
+    git clone https://github.com/sainnhe/gruvbox-material.git \
+        ~/.local/share/nvim/site/pack/packer/start/gruvbox-material && \
     nvim --headless -c "autocmd User PackerComplete quitall" -c "PackerSync" && \
-    gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/ && \
+    #gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/ && \
     echo "- Enjoy It -"
 
 CMD ["zsh"]
