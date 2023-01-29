@@ -174,7 +174,7 @@ if [[ -d "$NVIM_CONFIG_DIR" ]]; then
     mv "$NVIM_CONFIG_DIR" "$NVIM_CONFIG_DIR.backup"
 fi
 
-git clone git@github.com:CharlesChiuGit/nvimdots.lua.git "$NVIM_CONFIG_DIR"
+git clone git@github.com:double12gzh/nvim.git "$NVIM_CONFIG_DIR"
 
 printf "Installing ${tty_bold}packer.nvim${tty_reset}\n"
 if [[ ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ]]; then
@@ -189,14 +189,3 @@ printf "Done.\n\n"
 printf "${tty_bold}Finished installing Nvim config and its dependencies!${tty_reset}\n\n"
 
 printf "${tty_yellow}====================Script ends====================${tty_reset}\n\n"
-
-cat <<EOS
-
-- Project Homepage:
-    ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua${tty_reset}
-- Further documentation (including executables you ${tty_red}must${tty_reset} install for full functionality):
-    ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua/wiki/Prerequisite${tty_reset}
-- File an issue if you encounter any problems.
-    ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua/issues${tty_reset}
-
-EOS
