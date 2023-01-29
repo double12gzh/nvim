@@ -56,7 +56,7 @@ printf "Done.\n\n"
 #                       Install Node packages                        #
 ######################################################################
 printf "Installing ${tty_magenta}Node${tty_reset} packages.\n"
-NODE_DIR=/usr/local
+NODE_DIR=$HOME/tools/nodejs
 
 "$NODE_DIR/bin/npm" install npm@latest --location=global --silent
 # Install neovim support for node plugins
