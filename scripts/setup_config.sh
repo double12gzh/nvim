@@ -45,6 +45,7 @@ for p in "${py_packages[@]}"; do
 done
 
 printf "Using ${tty_cyan}conda${tty_reset} Python to install ${tty_green}${py_packages[*]}${tty_reset}\n"
+CONDA_DIR=$HOME/tools/anaconda
 for p in "${py_packages[@]}"; do
     "$CONDA_DIR/bin/pip3" install "$p" -q
 done
@@ -140,7 +141,7 @@ printf "Done.\n\n"
 ######################################################################
 #                    win32yank for Neovim in WSL                     #
 ######################################################################
-USE_WSL=false
+USE_WSL=true
 if [[ "$USE_WSL" = true ]]; then
     printf "Installing ${tty_magenta}win32yank${tty_reset} for ${tty_red}WSL${tty_reset} ${tty_underline}clipboard${tty_reset}.\n"
 
