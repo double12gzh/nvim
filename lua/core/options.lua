@@ -126,13 +126,13 @@ local function load_options()
 	end
 
 	-- custom node provider
-	vim.g.node_host_prog = "/usr/local/bin/neovim-node-host"
+	vim.g.node_host_prog = global.home .. "/tools/nodejs/bin/neovim-node-host"
 
 	-- custom perl provider
-	vim.g.perl_host_prog = "/usr/bin/perl"
+	vim.g.perl_host_prog = global.home .. "/tools/perl/bin/perl"
 
 	-- custom ruby provider
-	vim.g.ruby_host_prog = "/usr/local/bin/neovim-ruby-host"
+	vim.g.ruby_host_prog = global.home .. "/tools/ruby/bin/neovim-ruby-host"
 end
 
 load_options()
