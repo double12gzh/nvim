@@ -123,9 +123,6 @@ function Lazy:load_lazy()
 			},
 		},
 	}
-	if is_mac then
-		lazy_settings.concurrency = 20
-	end
 
 	vim.opt.rtp:prepend(lazy_path)
 	require("lazy").setup(self.repos, lazy_settings)
