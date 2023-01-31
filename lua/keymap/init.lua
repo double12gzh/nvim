@@ -68,10 +68,11 @@ keymap("n", "gh", "<cmd>Lspsaga lsp_finder<cr>", opts)
 keymap("n", "<leader>ci", "<cmd>Lspsaga incoming_calls<cr>", opts)
 keymap("n", "<leader>co", "<cmd>Lspsaga outgoing_calls<cr>", opts)
 keymap("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-keymap("n", "gd", "<cmd>Lspsaga goto_definition<cr>", opts)
-keymap("n", "gdc", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-keymap("n", "gt", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
+--keymap("n", "gd", "<cmd>Lspsaga goto_definition<cr>", opts)
+keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
+keymap("n", "gm", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
+keymap("n", "gI", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
+keymap("n", "gT", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
 keymap("n", "gDL", "<cmd>lua vim.diagnostic.setloclist()<cr>", opts) -- use trouble.nvim instead
 keymap("n", "gQL", "<cmd>lua vim.diagnostic.setqflist()<cr>", opts) -- use trouble.nvim instead
 
