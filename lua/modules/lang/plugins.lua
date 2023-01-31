@@ -1,20 +1,21 @@
 local lang = {}
 
 lang["fatih/vim-go"] = {
-	opt = true,
+	lazy = true,
 	ft = "go",
-	run = ":GoInstallBinaries",
+	-- unsupported for lazy.vim, while packer.vim supports this param
+	-- run = ":GoInstallBinaries",
 	config = function()
 		require("modules.lang.vim-go")
 	end,
 }
 lang["simrat39/rust-tools.nvim"] = {
-	opt = true,
+	lazy = true,
 	ft = "rust",
 	config = function()
 		require("modules.lang.rust-tools")
 	end,
-	requires = { { "nvim-lua/plenary.nvim", opt = false } },
+	dependencies = { "nvim-lua/plenary.nvim" },
 }
 lang["gaoDean/autolist.nvim"] = {
 	lazy = true,

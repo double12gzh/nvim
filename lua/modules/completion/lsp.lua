@@ -25,7 +25,7 @@ mason_lspconfig.setup({
 		"emmet_ls",
 		"gopls",
 		"jsonls",
-		"ltex",
+		--"ltex",
 		"marksman",
 		"pyright",
 		"sumneko_lua",

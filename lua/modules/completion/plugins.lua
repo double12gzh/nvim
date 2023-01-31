@@ -79,10 +79,10 @@ completion["zbirenbaum/copilot.lua"] = {
 		},
 	},
 }
-completion["barreiroleo/ltex_extra.nvim"] = {
-	lazy = true,
-	ft = "tex",
-}
+--completion["barreiroleo/ltex_extra.nvim"] = {
+--	lazy = true,
+--	ft = "tex",
+--}
 
 -- Adding *nvim config dir*, *nvim runtime dir*, *all plugin dir(with /lua dir)* to get
 -- hover docs and function signatures, but it takes too much time to load all dirs, use it if needed.

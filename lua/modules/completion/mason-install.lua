@@ -16,7 +16,7 @@ require("mason-tool-installer").setup({
 		"clangd",
 		"emmet-ls", -- HTML lsp
 		"json-lsp",
-		"ltex-ls",
+		--"ltex-ls",
 		"gopls",
 		"rust-analyzer",
 		"lua-language-server", -- equals sumneko_lua
