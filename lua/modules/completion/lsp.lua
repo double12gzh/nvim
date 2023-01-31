@@ -5,11 +5,20 @@ local mason_lspconfig = require("mason-lspconfig")
 require("lspconfig.ui.windows").default_options.border = "single"
 
 mason.setup({
+	max_concurrent_installers = 30,
+	-- speed
+	github = {
+		download_url_template = "https://ghproxy.com/https://github.com/%s/releases/download/%s/%s",
+	},
 	ui = {
 		border = "rounded",
 	},
 })
 mason_lspconfig.setup({
+	-- speed
+	github = {
+		download_url_template = "https://ghproxy.com/https://github.com/%s/releases/download/%s/%s",
+	},
 	ensure_installed = {
 		"bashls",
 		"clangd",

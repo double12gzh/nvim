@@ -106,6 +106,11 @@ require("nvim-treesitter.configs").setup({
 	matchup = { enable = true },
 })
 
+-- speed
+require("nvim-treesitter.install").command_extra_args = {
+	curl = { "--proxy", "http://127.0.0.1:7890" },
+}
+
 require("nvim-treesitter.install").prefer_git = true
 if use_ssh then
 	local parsers = require("nvim-treesitter.parsers").get_parser_configs()
