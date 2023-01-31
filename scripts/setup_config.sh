@@ -85,7 +85,7 @@ printf "Done.\n\n"
 printf "Installing ${tty_magenta}Ruby${tty_reset} packages via ${tty_yellow}gem${tty_reset}.\n"
 RUBY_DIR=$HOME/tools/ruby
 
-"gem" install neovim --silent
+"$RUBY_DIR/bin/gem" install neovim --silent
 
 printf "Done.\n\n"
 
@@ -176,14 +176,8 @@ fi
 
 git clone git@github.com:double12gzh/nvim.git "$NVIM_CONFIG_DIR"
 
-printf "Installing ${tty_bold}packer.nvim${tty_reset}\n"
-if [[ ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ]]; then
-    git clone --depth=1 https://github.com/wbthomason/packer.nvim \
-        ~/.local/share/nvim/site/pack/packer/opt/packer.nvim
-fi
-
 printf "Installing nvim plugins, please wait\n"
-"$NVIM_DIR/bin/nvim" -c "autocmd User PackerComplete quitall" -c "PackerSync"
+"$NVIM_DIR/bin/nvim" -c "+Lazy sync"
 printf "Done.\n\n"
 
 printf "${tty_bold}Finished installing Nvim config and its dependencies!${tty_reset}\n\n"

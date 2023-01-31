@@ -1,20 +1,3 @@
-vim.api.nvim_command([[packadd lsp_signature.nvim]])
-vim.api.nvim_command([[packadd lspsaga.nvim]])
-vim.api.nvim_command([[packadd cmp-nvim-lsp]])
-
--- Custom vertual text highlight groups to make error hint looks cool
---local util = require("utils")
---local bg = util.hlToRgb("Normal", true)
---local error_fg = util.hlToRgb("DiagnosticVirtualTextError", false)
---local warn_fg = util.hlToRgb("DiagnosticVirtualTextWarn", false)
---local info_fg = util.hlToRgb("DiagnosticVirtualTextInfo", false)
---local hint_fg = util.hlToRgb("DiagnosticVirtualTextHint", false)
---local alpha = 0.4
---vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = error_fg, bg = util.blend(error_fg, bg, alpha) })
---vim.api.nvim_set_hl(0, "DiagnosticVirtualTextWarn", { fg = warn_fg, bg = util.blend(warn_fg, bg, alpha) })
---vim.api.nvim_set_hl(0, "DiagnosticVirtualTextInfo", { fg = info_fg, bg = util.blend(info_fg, bg, alpha) })
---vim.api.nvim_set_hl(0, "DiagnosticVirtualTextHint", { fg = hint_fg, bg = util.blend(hint_fg, bg, alpha) })
-
 local lspconfig = require("lspconfig")
 local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
@@ -22,18 +5,11 @@ local mason_lspconfig = require("mason-lspconfig")
 require("lspconfig.ui.windows").default_options.border = "single"
 
 mason.setup({
-	-- fucking China's GWF
-	github = {
-		download_url_template = "https://ghproxy.com/https://github.com/%s/releases/download/%s/%s",
-	},
 	ui = {
 		border = "rounded",
 	},
 })
 mason_lspconfig.setup({
-	github = {
-		download_url_template = "https://ghproxy.com/https://github.com/%s/releases/download/%s/%s",
-	},
 	ensure_installed = {
 		"bashls",
 		"clangd",
@@ -64,7 +40,9 @@ local opts = {
 			fix_pos = true,
 			hint_enable = true,
 			hi_parameter = "Search",
-			handler_opts = { "double" },
+			handler_opts = {
+				border = "rounded",
+			},
 		})
 	end,
 	capabilities = capabilities,
@@ -122,7 +100,6 @@ mason_lspconfig.setup_handlers({
 				hi_parameter = "Search",
 				handler_opts = { "double" },
 			})
-
 			require("ltex_extra").setup({
 				load_langs = { "en-US" },
 				init_check = true,
@@ -130,7 +107,6 @@ mason_lspconfig.setup_handlers({
 				log_level = "error",
 			})
 		end
-
 		local ltex_opts = require("modules.completion.server-settings.ltex")
 		local extra_opts =
 			vim.tbl_deep_extend("keep", ltex_opts, { on_attach = ltex_attach, capabilities = opts.capabilities })

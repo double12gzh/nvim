@@ -33,11 +33,9 @@ function _G.set_terminal_keymaps()
 	vim.api.nvim_buf_set_keymap(0, "t", "<C-h>", [[<C-\><C-n><C-W>h]], opts)
 	vim.api.nvim_buf_set_keymap(0, "t", "<C-j>", [[<C-\><C-n><C-W>j]], opts)
 	vim.api.nvim_buf_set_keymap(0, "t", "<C-k>", [[<C-\><C-n><C-W>k]], opts)
-	-- conflict with clear screen with <C-l>
 	vim.api.nvim_buf_set_keymap(0, "t", "<C-l>", [[<C-\><C-n><C-W>l]], opts)
 end
 
---vim.api.nvim_command("autocmd! TermOpen term://*toggleterm#* lua set_terminal_keymaps()")
 vim.api.nvim_command("autocmd! TermOpen term://* lua set_terminal_keymaps()")
 
 local Terminal = require("toggleterm.terminal").Terminal
@@ -52,12 +50,6 @@ local lf = Terminal:new({ cmd = "lf", hidden = true, direction = "float" })
 
 function _LF_TOGGLE()
 	lf:toggle()
-end
-
-local xplr = Terminal:new({ cmd = "xplr", hidden = true, direction = "float" })
-
-function _XPLR_TOGGLE()
-	xplr:toggle()
 end
 
 local htop = Terminal:new({ cmd = "htop", hidden = true, direction = "float" })

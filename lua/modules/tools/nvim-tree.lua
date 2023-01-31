@@ -5,8 +5,6 @@ local icons = {
 	ui = require("modules.ui.icons").get("ui"),
 }
 
-vim.api.nvim_command([[packadd nvim-window-picker]])
-
 require("nvim-tree").setup({
 	auto_reload_on_write = true,
 	create_in_closed_folder = false,
@@ -18,16 +16,11 @@ require("nvim-tree").setup({
 	open_on_setup = false,
 	open_on_setup_file = false,
 	open_on_tab = false,
-	respect_buf_cwd = true,
+	respect_buf_cwd = false,
 	sort_by = "name",
 	sync_root_with_cwd = true,
 	update_cwd = true,
 	view = {
-		mappings = {
-			list = {
-				{ key = "<C-e>", action = "" },
-			},
-		},
 		adaptive_size = false,
 		centralize_selection = false,
 		width = 30,
@@ -66,7 +59,7 @@ require("nvim-tree").setup({
 				none = "  ",
 			},
 		},
-		root_folder_modifier = ":~",
+		root_folder_modifier = ":.:s?.*?/..?",
 		icons = {
 			webdev_colors = true,
 			git_placement = "before",
@@ -131,10 +124,9 @@ require("nvim-tree").setup({
 			window_picker = {
 				enable = true,
 				chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
-				picker = require("window-picker").pick_window,
 				exclude = {
-					filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
-					buftype = { "nofile", "terminal", "help" },
+					filetype = { "notify", "qf", "diff", "fugitive", "fugitiveblame" },
+					buftype = { "terminal", "help" },
 				},
 			},
 		},
@@ -143,8 +135,8 @@ require("nvim-tree").setup({
 		},
 	},
 	diagnostics = {
-		enable = true,
-		show_on_dirs = true,
+		enable = false,
+		show_on_dirs = false,
 		debounce_delay = 50,
 		icons = {
 			hint = icons.diagnostics.Hint_alt,

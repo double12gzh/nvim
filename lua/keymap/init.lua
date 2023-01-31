@@ -4,35 +4,29 @@ local opts = { noremap = true, silent = true, nowait = true }
 -- Plugin keymaps
 
 --- DAP
-keymap("n", "<F8>", "<cmd>lua require('dap').continue()<cr>", opts) -- Launching debug sessions and resuming execution
-keymap("n", "<leader>dr", "<cmd>lua require('dap').continue()<cr>", opts)
-keymap("n", "<leader>dd", "<cmd>lua require('dap').terminate()<cr>", opts)
-keymap("n", "<leader>db", "<cmd>lua require('dap').toggle_breakpoint()<cr>", opts)
-keymap("n", "<leader>dB", "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>", opts)
-keymap("n", "<leader>dbl", "<cmd>lua require('dap').list_breakpoints()<cr>", opts)
-keymap("n", "<leader>drc", "<cmd>lua require('dap').run_to_cursor()<cr>", opts)
-keymap("n", "<leader>drl", "<cmd>lua require('dap').run_last()<cr>", opts)
-keymap("n", "<F9>", "<cmd>lua require('dap').step_over()<cr>", opts)
-keymap("n", "<leader>dv", "<cmd>lua require('dap').step_over()<cr>", opts)
-keymap("n", "<F10>", "<cmd>lua require('dap').step_into()<cr>", opts)
-keymap("n", "<leader>di", "<cmd>lua require('dap').step_into()<cr>", opts)
-keymap("n", "<F11>", "<cmd>lua require('dap').step_out()<cr>", opts)
-keymap("n", "<leader>do", "<cmd>lua require('dap').step_out()<cr>", opts)
-keymap("n", "<leader>dl", "<cmd>lua require('dap').repl.open()<cr>", opts)
+keymap("n", "<F6>", "<cmd>lua require('dap').continue()<cr>", opts) -- Launching debug sessions and resuming execution
+keymap("n", "<F7>", "<cmd>lua require('dap').terminate() require('dapui').close()<cr>", opts)
+keymap("n", "<F8>", "<cmd>lua require('dap').toggle_breakpoint()<cr>", opts)
+keymap("n", "<F9>", "<cmd>lua require('dap').step_into()<cr>", opts)
+keymap("n", "<F10>", "<cmd>lua require('dap').step_out()<cr>", opts)
+keymap("n", "<F11>", "<cmd>lua require('dap').step_over()<cr>", opts)
+keymap("n", "<leader>db", "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))", opts)
+keymap("n", "<leader>dc", "<cmd>lua require('dap').run_to_cursor()<cr>", opts)
+keymap("n", "<leader>dl", "<cmd>lua require('dap').run_last()<cr>", opts)
+keymap("n", "<leader>do", "<cmd>lua require('dap').repl.open()<cr>", opts)
 
 --- Telescope
 keymap("n", "<leader>fu", "<cmd>lua require('telescope').extensions.undo.undo()<cr>", opts)
-keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", opts)
 keymap("n", "<leader>fp", "<cmd>lua require('telescope').extensions.projects.projects{}<cr>", opts)
 keymap("n", "<leader>fr", "<cmd>lua require('telescope').extensions.frecency.frecency{}<cr>", opts)
 keymap("n", "<leader>fw", "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args{}<cr>", opts)
-keymap("n", "<F5>", "<cmd>Telescope grep_string<cr>", opts)
-keymap("n", "<F6>", "<cmd>Telescope live_grep<cr>", opts)
-keymap("n", "<F7>", "<cmd>Telescope find_files<cr>", opts)
+keymap("n", "<leader>fs", "<cmd>Telescope grep_string<cr>", opts)
+keymap("n", "<leader>fl", "<cmd>Telescope live_grep<cr>", opts)
+keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", opts)
 keymap("n", "<leader>fe", "<cmd>Telescope oldfiles<cr>", opts)
 keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
-keymap("n", "<leader>fn", "<cmd>enew<cr>", opts)
 keymap("n", "<leader>fg", "<cmd>Telescope git_files<cr>", opts)
+keymap("n", "<leader>fn", "<cmd>enew<cr>", opts)
 keymap("n", "<leader>fz", "<cmd>Telescope zoxide list<cr>", opts)
 
 --- bufdelete.nvim
@@ -57,25 +51,29 @@ keymap("n", "<A-9>", "<cmd>ufferLineGoToBuff 9", opts)
 --- Lsp mapping work when event:InsertEnter & event:LspStart
 --keymap("n", "<leader>li", "<cmd>LspInfo<cr>", opts)
 --keymap("n", "<leader>lr", "<cmd>LspRestart<cr>", opts)
---keymap("n", "<F3>", "<cmd>Lspsaga outline<cr>", opts)
-keymap("n", "<F3>", "<cmd>SymbolsOutline<cr>", opts)
+keymap("n", "<F3>", "<cmd>Lspsaga outline<cr>", opts)
+--keymap("n", "<F3>", "<cmd>SymbolsOutline<cr>", opts)
 -- Diagnostic jump can use `<c-o>` to jump back
-keymap("n", "e[", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
-keymap("n", "e]", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
+keymap("n", "g[", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
+keymap("n", "g]", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
+keymap("n", "<leader>sl", "<cmd>Lspsaga show_line_diagnostics<cr>", opts)
+keymap("n", "<leader>sc", "<cmd>Lspsaga show_cursor_diagnostics<cr>", opts)
 keymap("n", "gr", "<cmd>Lspsaga rename<cr>", opts)
+keymap("n", "gR", "<cmd>Lspsaga rename ++project<cr>", opts)
 keymap("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
 keymap("n", "ga", "<cmd>Lspsaga code_action<cr>", opts)
 keymap("v", "ga", "<cmd>Lspsaga code_action<cr>", opts)
 keymap("n", "gD", "<cmd>Lspsaga peek_definition<cr>", opts)
 keymap("n", "gh", "<cmd>Lspsaga lsp_finder<cr>", opts)
-keymap("n", "gl", "<cmd>Lspsaga show_line_diagnostics<cr>", opts)
+keymap("n", "<leader>ci", "<cmd>Lspsaga incoming_calls<cr>", opts)
+keymap("n", "<leader>co", "<cmd>Lspsaga outgoing_calls<cr>", opts)
 keymap("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts) -- go to definition
-keymap("n", "gm", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
+keymap("n", "gd", "<cmd>Lspsaga goto_definition<cr>", opts)
+keymap("n", "gdc", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
 keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
 keymap("n", "gt", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
--- keymap("n", "gDL", "<cmd>lua vim.diagnostic.setloclist()<cr>", opts) -- use trouble.nvim instead
--- keymap("n", "gQL", "<cmd>lua vim.diagnostic.setqflist()<cr>", opts) -- use trouble.nvim instead
+keymap("n", "gDL", "<cmd>lua vim.diagnostic.setloclist()<cr>", opts) -- use trouble.nvim instead
+keymap("n", "gQL", "<cmd>lua vim.diagnostic.setqflist()<cr>", opts) -- use trouble.nvim instead
 
 -- install lazygit: https://github.com/jesseduffield/lazygit#keybindings
 keymap("n", "<leader>lg", "<cmd>lua _LAZYGIT_TOGGLE()<cr>", opts)
@@ -125,12 +123,12 @@ keymap("n", "<leader>nr", "<cmd>NvimTreeRefresh<cr>", opts)
 keymap("n", "j", "<Plug>(accelerated_jk_gj)", {})
 keymap("n", "k", "<Plug>(accelerated_jk_gk)", {})
 
---- comment-frame
-keymap("n", "<leader>cf", "<cmd>lua require('nvim-comment-frame').add_comment()<cr>", {})
-keymap("n", "<leader>cF", "<cmd>lua require('nvim-comment-frame').add_multiline_comment()<cr>", {})
-
 --- MarkdownPreview
 keymap("n", "<F12>", "<cmd>MarkdownPreviewToggle<cr>", opts)
+
+-- Tabout
+keymap("i", "<A-l>", "<Plug>(TaboutMulti)", opts)
+keymap("i", "<A-h>", "<Plug>(TaboutBackMulti)", opts)
 
 --- SnipRun
 keymap("n", "<leader>R", "<cmd>SnipRun<cr>", opts)
@@ -143,20 +141,27 @@ keymap("n", "<leader><leader>dv", "<cmd>DiffviewClose<cr>", opts)
 --- Legendary
 keymap("n", "<A-p>", "<cmd>Legendary<cr>", opts)
 
-keymap("n", "n", "nzz", opts)
-keymap("n", "N", "Nzz", opts)
-keymap("n", "*", "*zz", opts)
-keymap("n", "#", "#zz", opts)
-
---- Packer
---keymap("n", "<leader>pc", "<cmd>PackerCompile<cr>", opts)
---keymap("n", "<leader>ps", "<cmd>PackerSync<cr>", opts)
---keymap("n", "<leader>pt", "<cmd>PackerStatus<cr>", opts)
+--- Lazy.nvim
+keymap("n", "<leader>ph", "<cmd>Lazy<cr>", opts)
+keymap("n", "<leader>ps", "<cmd>Lazy sync<cr>", opts)
+keymap("n", "<leader>pu", "<cmd>Lazy update<cr>", opts)
+keymap("n", "<leader>pi", "<cmd>Lazy install<cr>", opts)
+keymap("n", "<leader>pl", "<cmd>Lazy log<cr>", opts)
+keymap("n", "<leader>pc", "<cmd>Lazy check<cr>", opts)
+keymap("n", "<leader>pd", "<cmd>Lazy debug<cr>", opts)
+keymap("n", "<leader>pp", "<cmd>Lazy profile<cr>", opts)
+keymap("n", "<leader>pr", "<cmd>Lazy restore<cr>", opts)
+keymap("n", "<leader>px", "<cmd>Lazy clean<cr>", opts)
 
 --- comment-frame
--- "<leader>cf" to use comment-frame
+keymap("n", "<leader>cf", "<cmd>lua require('nvim-comment-frame').add_comment()<cr>", {})
+keymap("n", "<leader>cF", "<cmd>lua require('nvim-comment-frame').add_multiline_comment()<cr>", {})
 
 --- ssr.nvim, structural search and replace
+-- vim.keymap.set({ "n", "x" }, "<leader>sr", function()
+-- 	require("ssr").open()
+-- end, { desc = "structural search and replace." })
+
 --- search-replace.nvim
 -- SearchReplaceSingleBuffer
 keymap("n", "<leader>rs", "<cmd>SearchReplaceSingleBufferSelections<cr>", opts)
@@ -205,15 +210,20 @@ keymap("v", "<leader>=", "<Plug>(dial-increment)", { noremap = true })
 keymap("n", "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
 keymap("v", "<leader>-", "<Plug>(dial-decrement)", { noremap = true })
 
+--- EasyAlign
+keymap("n", "gea", "v:lua.enhance_align('nea')", {})
+keymap("x", "gea", "v:lua.enhance_align('xea')", {})
+
 --- regexplainer
 -- "<leader>gR" to toggle regexplainer
-
---- leap.nvim
--- "s/S", "f/F", "t/T" to use leap
 
 --- nabla
 keymap("n", "<leader>mp", "<cmd>lua require('nabla').popup('rounded')<cr>", opts)
 
+--- leap.nvim
+-- "s/S", "f/F", "t/T" to use leap
+
+--- syntax-tree-surfer
 -- Visual Selection from Normal Mode
 keymap("n", "vx", "<cmd>STSSelectMasterNode<cr>", opts)
 keymap("n", "vn", "<cmd>STSSelectCurrentNode<cr>", opts)
@@ -230,3 +240,74 @@ keymap("x", "-", "<cmd>STSSelectChildNode<cr>", opts)
 -- "gif", jump to if-statements
 -- "gfo", jump to for-statements
 -- "gj", jump to certain nodes
+
+--- various-textobjs
+-- select around same indent level
+keymap("o", "aI", "<cmd>lua require('various-textobjs').indentation(false, false)<cr>", opts)
+keymap("x", "aI", "<cmd>lua require('various-textobjs').indentation(false, false)<cr>", opts)
+-- select inside same indent level
+keymap("o", "iI", "<cmd>lua require('various-textobjs').indentation(true, true)<cr>", opts)
+keymap("x", "iI", "<cmd>lua require('various-textobjs').indentation(true, true)<cr>", opts)
+
+-- select around value of key-value pair, including trailing commas or semicolons
+keymap("o", "av", "<cmd>lua require('various-textobjs').value(false)<cr>", opts)
+keymap("x", "av", "<cmd>lua require('various-textobjs').value(false)<cr>", opts)
+-- select inside value of key-value pair, excluding trailing commas or semicolons
+keymap("o", "iv", "<cmd>lua require('various-textobjs').value(true)<cr>", opts)
+keymap("x", "iv", "<cmd>lua require('various-textobjs').value(true)<cr>", opts)
+
+-- select around number, including signs & decimal point
+keymap("o", "an", "<cmd>lua require('various-textobjs').number(false)<cr>", opts)
+keymap("x", "an", "<cmd>lua require('various-textobjs').number(false)<cr>", opts)
+-- select pure number, excluding signs & decimal point
+keymap("o", "in", "<cmd>lua require('various-textobjs').number(true)<cr>", opts)
+keymap("x", "in", "<cmd>lua require('various-textobjs').number(true)<cr>", opts)
+
+-- select LSP diagnostic(require built-in LSP)
+keymap("o", "!", "<cmd>lua require('various-textobjs').diagnostic()<cr>", opts)
+keymap("x", "!", "<cmd>lua require('various-textobjs').diagnostic()<cr>", opts)
+
+-- select entire mdlink, [title](url), md only
+keymap("o", "al", "<cmd>lua require('various-textobjs').mdlink(false)<cr>", opts)
+keymap("x", "al", "<cmd>lua require('various-textobjs').mdlink(false)<cr>", opts)
+-- select mdlink title, md only
+keymap("o", "il", "<cmd>lua require('various-textobjs').mdlink(true)<cr>", opts)
+keymap("x", "il", "<cmd>lua require('various-textobjs').mdlink(true)<cr>", opts)
+
+-- select arround mdFencedCodeBlock, including the enclosing backticks, md only
+keymap("o", "aC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<cr>", opts)
+keymap("x", "aC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<cr>", opts)
+-- select inside mdFencedCodeBlock, excluding the enclosing backticks, md only
+keymap("o", "iC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<cr>", opts)
+keymap("x", "iC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<cr>", opts)
+
+-- select arround doubleSquareBrackets([[]]), including the four square brackets(lua, shell, neorg, md)
+keymap("o", "aC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<cr>", opts)
+keymap("x", "aC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<cr>", opts)
+-- select inside doubleSquareBrackets([[]]), excluding the four square brackets(lua, shell, neorg, md)
+keymap("o", "iC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<cr>", opts)
+keymap("x", "iC", "<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<cr>", opts)
+
+-- select column down until indent or shorter line. Accepts `{count}` for multi-columns
+keymap("o", "|", "<cmd>lua require('various-textobjs').column()<cr>", opts)
+keymap("x", "|", "<cmd>lua require('various-textobjs').column()<cr>", opts)
+keymap("x", "|", "<cmd>lua require('various_textobjs').column()<cr>", opts)
+
+-- select the rest of the Paragraph, like `}`, but linewise
+keymap("o", "r", "<cmd>lua require('various-textobjs').restOfParagraph()<cr>", opts)
+keymap("x", "r", "<cmd>lua require('various-textobjs').restOfParagraph()<cr>", opts)
+
+-- select subword, but never treating `-`, `_` or `.` as word delimiters
+keymap("o", "aS", "<cmd>lua require('various-textobjs').subword(false)<cr>", opts)
+keymap("x", "aS", "<cmd>lua require('various-textobjs').subword(false)<cr>", opts)
+-- --
+keymap("o", "iS", "<cmd>lua require('various-textobjs').subword(true)<cr>", opts)
+keymap("x", "iS", "<cmd>lua require('various-textobjs').subword(true)<cr>", opts)
+
+--- markdowny.nvim(hard-coded)
+-- vim.keymap.set("v", "<C-b>", ":lua require('markdowny').bold()<cr>", { buffer = 0 })
+-- vim.keymap.set("v", "<C-i>", ":lua require('markdowny').italic()<cr>", { buffer = 0 })
+-- vim.keymap.set("v", "<C-k>", ":lua require('markdowny').link()<cr>", { buffer = 0 })
+
+--- oil.nvim
+keymap("n", "<leader>o", "<cmd>lua require('oil').open_float()<cr>", opts)

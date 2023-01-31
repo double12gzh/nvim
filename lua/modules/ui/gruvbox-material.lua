@@ -10,4 +10,4 @@ vim.g.gruvbox_material_foreground = "mix"
 vim.g.gruvbox_material_ui_contrast = "high"
 vim.g.gruvbox_material_statusline_style = "default"
 
-vim.api.nvim_command([[colorscheme gruvbox-material]])
+--vim.api.nvim_command([[colorscheme gruvbox-material]])

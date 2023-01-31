@@ -18,7 +18,7 @@ return {
 			},
 			diagnostics = {
 				enable = true,
-				globals = { "vim", "packer_plugins" },
+				globals = { "vim" },
 				-- neededFileStatus = { ["codestyle-check"] = "Any" },
 			},
 			workspace = {
@@ -30,9 +30,8 @@ return {
 				maxPreload = 2000,
 				preloadFileSize = 1000,
 			},
-			telemetry = {
-				enable = false,
-			},
+			telemetry = { enable = false },
+			-- Do not override treesitter lua highlighting with sumneko lua highlighting
 			semantic = { enable = false },
 		},
 	},

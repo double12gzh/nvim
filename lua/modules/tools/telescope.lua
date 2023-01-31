@@ -1,17 +1,4 @@
-local cmd = vim.api.nvim_command
-
-cmd([[packadd sqlite.lua]])
-cmd([[packadd project.nvim]])
-cmd([[packadd telescope-fzf-native.nvim]])
-cmd([[packadd telescope-frecency.nvim]])
-cmd([[packadd telescope-env.nvim]])
-cmd([[packadd nvim-notify]])
-cmd([[packadd nvim-neoclip.lua]])
-cmd([[packadd telescope-live-grep-args.nvim]])
-cmd([[packadd telescope-undo.nvim]])
-
 local icons = { ui = require("modules.ui.icons").get("ui", true) }
-
 local actions = require("telescope.actions.set")
 local fixfolds = {
 	hidden = true,
@@ -33,9 +20,7 @@ require("telescope").setup({
 		selection_caret = icons.ui.ChevronRight,
 		entry_prefix = " ",
 		scroll_strategy = "limit",
-		set_env = { ["COLORTERM"] = "truecolor" },
 		results_title = false,
-		-- borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
 		layout_strategy = "horizontal",
 		path_display = { "smart" }, -- absolute
 		dynamic_preview_title = true,
@@ -89,9 +74,6 @@ require("telescope").setup({
 		},
 	},
 	extensions = {
-		-- conda = {
-		-- 	home = "$HOME/tools/anaconda",
-		-- },
 		fzf = {
 			fuzzy = true,
 			override_generic_sorter = true,
@@ -115,8 +97,8 @@ require("telescope").setup({
 			-- define mappings, e.g.
 			mappings = { -- extend mappings
 				i = {
-					["<C-k>"] = require("telescope-live-grep-args.actions").quote_prompt(),
-					["<C-i>"] = require("telescope-live-grep-args.actions").quote_prompt({ postfix = " --iglob " }),
+					["<C-k>"] = lga_actions.quote_prompt(),
+					["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
 				},
 			},
 		},
@@ -154,5 +136,6 @@ require("telescope").load_extension("fzf")
 require("telescope").load_extension("projects")
 require("telescope").load_extension("notify")
 require("telescope").load_extension("neoclip")
+-- require("telescope").load_extension("git_worktree")
 require("telescope").load_extension("live_grep_args")
 require("telescope").load_extension("undo")

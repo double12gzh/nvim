@@ -7,30 +7,10 @@ vim.defer_fn(function()
 		panel = {
 			-- if true, it can interfere with completions in copilot-cmp
 			enabled = false,
-			--enabled = true,
-			--auto_refresh = false,
-			--keymap = {
-			--	jump_prev = "[[",
-			--	jump_next = "]]",
-			--	accept = "<CR>",
-			--	refresh = "gr",
-			--	open = "<M-CR>",
-			--},
 		},
 		suggestion = {
 			-- if true, it can interfere with completions in copilot-cmp
 			enabled = false,
-			--enabled = true,
-			--auto_trigger = false,
-			--debounce = 75,
-			--keymap = {
-			--	accept = "<M-l>",
-			--	accept_word = false,
-			--	accept_line = false,
-			--	next = "<M-]>",
-			--	prev = "<M-[>",
-			--	dismiss = "<C-]>",
-			--},
 		},
 		filetypes = {
 			yaml = false,
@@ -46,6 +26,7 @@ vim.defer_fn(function()
 			cvs = false,
 			["."] = false,
 			["dap-repl"] = false,
+			["big_file_disabled_ft"] = false,
 		},
 		plugin_manager_path = vim.fn.stdpath("data") .. "/site/pack/packer",
 		-- Use this field to provide the path to a specific node version such as one installed by nvm. Node version must be < 18.

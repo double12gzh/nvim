@@ -59,6 +59,7 @@ local data = {
 		File = "",
 		Files = "",
 		FileTree = "פּ",
+		Import = "",
 		Symlink = "",
 	},
 	git = {
@@ -95,8 +96,8 @@ local data = {
 		Close_alt = "",
 		CloudDownload = "",
 		Comment = "",
+		CodeAction = "",
 		Dashboard = "",
-		DoubleSeparator = "",
 		Emoji = "",
 		EmptyFolder = "",
 		EmptyFolderOpen = "",
@@ -106,23 +107,29 @@ local data = {
 		FolderOpen = "",
 		Gear = "",
 		History = "",
+		Incoming = "",
 		Indicator = "",
+		Keyboard = "",
 		Left = "",
-		Lightbulb = "",
 		List = "",
+		Square = "",
 		Lock = "",
 		Modified = "✥",
 		Modified_alt = "",
 		NewFile = "",
+		Newspaper = "",
 		Note = "",
+		Outgoing = "",
 		Package = "",
 		Pencil = "",
 		Perf = "",
+		Play = "",
 		Project = "",
 		Right = "",
 		RootFolderOpened = "",
 		Search = "",
 		Separator = "",
+		SeparatorDouble = "",
 		SignIn = "",
 		SignOut = "",
 		Sort = "",
@@ -162,6 +169,7 @@ local data = {
 		Added = "",
 		Ghost = "",
 		ManUp = "",
+		Vim = "",
 	},
 	cmp = {
 		Copilot = "",
@@ -169,7 +177,7 @@ local data = {
 		nvim_lsp = "",
 		nvim_lua = "",
 		path = "",
-		buffer = " ",
+		buffer = "",
 		spell = "暈",
 		luasnip = "",
 		treesitter = "",
@@ -201,7 +209,6 @@ local data = {
 }
 
 ---Get a specific icon set.
----Returns the corrosponding icon set.
 ---@param category string|"kind"|"type"|"documents"|"git"|"ui"|"diagnostics"|"misc"|"cmp"|"dap"
 ---@param add_space? boolean @Add trailing space after the icon.
 function icons.get(category, add_space)

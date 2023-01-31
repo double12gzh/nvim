@@ -59,33 +59,22 @@ printf "\n${tty_yellow}====================Script starts====================${tt
 NVIM_DIR=$HOME/tools/nvim
 NVIM_CONFIG_DIR=$HOME/.config/nvim
 
-printf "Fetch ${tty_blue}CharlesChiuGit/nvimdots.lua${tty_reset} commits...\n"
+printf "Fetch ${tty_blue}double12gzh/nvim${tty_reset} commits...\n"
 
 cd "$NVIM_CONFIG_DIR"
 git fetch
 status=$(check_git_update "")
 
 if [[ $status = true ]]; then
-    printf "Update ${tty_blue}CharlesChiuGit/nvimdots.lua${tty_reset}"
+    printf "Update ${tty_blue}double12gzh/nvim${tty_reset}"
     git pull
     printf "Updateing nvim plugins, please wait\n"
-    "$NVIM_DIR/bin/nvim" -c "autocmd User PackerComplete quitall" -c "PackerSync"
+    "$NVIM_DIR/bin/nvim" -c "+Lazy sync"
     printf "Done.\n"
 elif [[ $status = false ]]; then
-    printf "${tty_blue}CharlesChiuGit/nvimdots.lua${tty_reset} is up-to-date!\n"
+    printf "${tty_blue}double12gzh/nvim.lua${tty_reset} is up-to-date!\n"
 fi
 
 printf "${tty_bold}Finished updating Nvim config!${tty_reset}\n\n"
 
 printf "${tty_yellow}====================Script ends====================${tty_reset}\n\n"
-
-cat <<EOS
-
-- Project Homepage:
-    ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua${tty_reset}
-- Further documentation (including executables you ${tty_red}must${tty_reset} install for full functionality):
-    ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua/wiki/Prerequisite${tty_reset}
-- File an issue if you encounter any problems.
-    ${tty_green}https://github.com/CharlesChiuGit/nvimdots.lua/issues${tty_reset}
-
-EOS

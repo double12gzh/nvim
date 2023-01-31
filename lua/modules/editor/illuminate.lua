@@ -17,19 +17,10 @@ require("illuminate").configure({
 		"dirvish",
 		"fugitive",
 		"help",
-		"lir",
+		"lsgsagaoutline",
 		"neogitstatus",
 		"norg",
-		"packer",
-		"spectre_panel",
 		"toggleterm",
 	},
-	under_cursor = true,
-	large_file_cutoff = 2000,
+	under_cursor = false,
 })
-
--- illuminate setting
--- disable the followings inorder to support grey highlight for word under cursor
---vim.api.nvim_set_hl(0, "IlluminatedWordText", { underline = true })
---vim.api.nvim_set_hl(0, "IlluminatedWordRead", { underline = true })
---vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { underline = true })

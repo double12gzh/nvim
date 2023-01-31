@@ -24,7 +24,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 			and vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(layout[2]), "filetype") == "NvimTree"
 			and layout[3] == nil
 		then
-			vim.cmd("confirm quit")
+			cmd("confirm quit")
 		end
 	end,
 })
@@ -42,10 +42,13 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 function autocmd.load_autocmds()
 	local definitions = {
-		packer = {},
+		lazy = {},
 		bufs = {
 			-- Reload vim config automatically
-			{ "BufWritePost", [[$VIM_PATH/{*.vim,*.yaml,vimrc} nested source $MYVIMRC | redraw]] },
+			{
+				"BufWritePost",
+				[[$VIM_PATH/{*.vim,*.yaml,vimrc} nested source $MYVIMRC | redraw]],
+			},
 			{ "BufWritePre", "/tmp/*", "setlocal noundofile" },
 			{ "BufWritePre", "COMMIT_EDITMSG", "setlocal noundofile" },
 			{ "BufWritePre", "MERGE_MSG", "setlocal noundofile" },
@@ -53,12 +56,6 @@ function autocmd.load_autocmds()
 			{ "BufWritePre", "*.bak", "setlocal noundofile" },
 			-- auto change directory
 			-- { "BufEnter", "*", "silent! lcd %:p:h" },
-			-- auto place to last edit
-			--{
-			--	"BufReadPost",
-			--	"*",
-			--	[[if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif]],
-			--},
 		},
 		wins = {
 			-- Highlight current line only on focused window
@@ -82,7 +79,8 @@ function autocmd.load_autocmds()
 			{ "FocusGained", "* checktime" },
 			-- Equalize window dimensions when resizing vim window
 			{ "VimResized", "*", [[tabdo wincmd =]] },
-			{ "VimLeavePre", "*", "silent wall" },
+			-- Silent quit, also quicker, might cause issues
+			-- { "VimLeavePre", "*", "silent wall" },
 		},
 		ft = {
 			{ "FileType", "alpha", "set showtabline=0" },

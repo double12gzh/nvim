@@ -10,6 +10,7 @@ local function escape_status()
 	return ok and m.waiting and icons.misc.EscapeST or ""
 end
 
+local _cache = { context = "", bufnr = -1 }
 local function lspsaga_symbols()
 	local exclude = {
 		["terminal"] = true,
@@ -21,14 +22,16 @@ local function lspsaga_symbols()
 	if vim.api.nvim_win_get_config(0).zindex or exclude[vim.bo.filetype] then
 		return "" -- Excluded filetypes
 	else
+		local currbuf = vim.api.nvim_get_current_buf()
 		local ok, lspsaga = pcall(require, "lspsaga.symbolwinbar")
-		if ok then
-			if lspsaga.get_symbol_node() ~= nil then
-				return lspsaga.get_symbol_node()
-			else
-				return "" -- Cannot get node
-			end
+		if ok and lspsaga:get_winbar() ~= nil then
+			_cache.context = lspsaga:get_winbar()
+			_cache.bufnr = currbuf
+		elseif _cache.bufnr ~= currbuf then
+			_cache.context = "" -- Reset [invalid] cache (usually from another buffer)
 		end
+
+		return _cache.context
 	end
 end
 
@@ -52,12 +55,6 @@ local function get_cwd()
 	return icons.ui.RootFolderOpened .. cwd
 end
 
-local conditions = {
-	check_code_context = function()
-		return lspsaga_symbols() ~= ""
-	end,
-}
-
 local mini_sections = {
 	lualine_a = { "filetype" },
 	lualine_b = {},
@@ -75,14 +72,14 @@ local diffview = {
 	filetypes = { "DiffviewFiles" },
 }
 
-local hide_in_width = function()
-	return vim.fn.winwidth(0) > 30
-end
+-- local hide_in_width = function()
+-- 	return vim.fn.winwidth(0) > 30
+-- end
 
-local git_blame = require("gitblame")
-local gitblame_cond = function()
-	return (git_blame.is_blame_text_available() and hide_in_width())
-end
+-- local git_blame = require("gitblame")
+-- local gitblame_cond = function()
+-- 	return (git_blame.is_blame_text_available() and hide_in_width())
+-- end
 
 local function python_venv()
 	local function env_cleanup(venv)
@@ -110,17 +107,16 @@ local function python_venv()
 end
 
 -- check your colorscheme in REPO/lua/lualine/themes/THEME.lua -> normal.b.bg
--- if comment out these two line, fidget cannot display
-vim.api.nvim_set_hl(0, "SLGitIcon", { fg = "#E8AB53", bg = "#252535" })
-vim.api.nvim_set_hl(0, "SLBranchName", { fg = "#D4D4D4", bg = "#252535" })
+-- if vim.g.colors_name == "catppuccin" then
+-- 	vim.api.nvim_set_hl(0, "SLGitIcon", { fg = "#E8AB53", bg = "#575268" })
+-- 	vim.api.nvim_set_hl(0, "SLBranchName", { fg = "#D4D4D4", bg = "#575268" })
+-- end
 
 require("lualine").setup({
 	options = {
 		icons_enabled = true,
-		-- theme = "kanagawa",
-		-- theme = vim.g.colors_name,
-		theme = "gruvbox-material",
-		disabled_filetypes = { "alpha", "dashboard", "NvimTree" },
+		theme = vim.g.colors_name,
+		disabled_filetypes = { "alpha" },
 		component_separators = "|",
 		section_separators = { left = "", right = "" },
 		globalstatus = true,
@@ -131,15 +127,15 @@ require("lualine").setup({
 			{
 				"branch",
 				icons_enabled = true,
+				-- icon = "%#SLGitIcon#" .. icons.git.Branch .. "%*" .. "%#SLBranchName#",
 				icon = icons.git.Branch,
 			},
 			{ "diff", source = diff_source },
 		},
-		lualine_c = {
-			{ lspsaga_symbols, cond = conditions.check_code_context },
-		},
+		lualine_c = { lspsaga_symbols },
 		lualine_x = {
 			{ escape_status },
+			-- { git_blame.get_current_blame_text, cond = gitblame_cond },
 			{ get_cwd },
 			{
 				"diagnostics",
@@ -182,6 +178,7 @@ require("lualine").setup({
 		"nvim-tree",
 		"nvim-dap-ui",
 		"toggleterm",
+		"fugitive",
 		outline,
 		diffview,
 	},
@@ -189,7 +186,7 @@ require("lualine").setup({
 
 -- Properly set background color for lspsaga
 local winbar_bg = require("modules.utils").hl_to_rgb("StatusLine", true, "#000000")
-require("modules.utils").extend_hl("LspSagaWinbarSep", { bg = winbar_bg })
-for _, hlGroup in pairs(require("lspsaga.lspkind")) do
+for _, hlGroup in pairs(require("lspsaga.lspkind").get_kind()) do
 	require("modules.utils").extend_hl("LspSagaWinbar" .. hlGroup[1], { bg = winbar_bg })
 end
+require("modules.utils").extend_hl("LspSagaWinbarSep", { bg = winbar_bg })

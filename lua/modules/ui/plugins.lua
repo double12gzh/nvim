@@ -1,136 +1,142 @@
 local ui = {}
 
 ui["goolord/alpha-nvim"] = {
-	opt = true,
+	lazy = true,
 	event = "BufWinEnter",
 	config = function()
 		require("modules.ui.alpha")
 	end,
 }
 ui["akinsho/bufferline.nvim"] = {
-	opt = true,
-	tag = "*",
-	event = "BufReadPost",
+	lazy = true,
+	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = function()
 		require("modules.ui.bufferline")
 	end,
 }
-ui["stevearc/dressing.nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	config = function()
-		require("modules.ui.dressing")
-	end,
-}
-ui["NvChad/nvim-colorizer.lua"] = {
-	opt = true,
-	after = { "nvim-treesitter" },
-	config = function()
-		require("modules.ui.colorizer")
-	end,
-}
 ui["j-hui/fidget.nvim"] = {
-	opt = true,
+	lazy = true,
 	event = "BufReadPost",
 	config = function()
 		require("modules.ui.fidget")
 	end,
 }
 ui["f-person/git-blame.nvim"] = {
-	opt = true,
+	lazy = true,
 	event = "BufReadPost",
 	config = function()
 		require("modules.ui.git-blame")
 	end,
 }
 ui["lewis6991/gitsigns.nvim"] = {
-	opt = true,
+	lazy = true,
 	event = { "BufReadPost", "BufNewFile" },
 	config = function()
 		require("modules.ui.gitsigns")
 	end,
 }
-ui["sainnhe/gruvbox-material"] = {
-	opt = false,
-	--event = "VimEnter",
-	config = function()
-		require("modules.ui.gruvbox-material")
-	end,
-}
+-- ui["sainnhe/gruvbox-material"] = {
+-- lazy = true,
+-- 	config = function()
+-- 		require("modules.ui.gruvbox-material")
+-- 	end,
+-- }
+-- ui["ellisonleao/gruvbox.nvim"] = {
+-- lazy = true,
+-- 	config = function()
+-- 		require("modules.ui.gruvbox")
+-- 	end,
+-- }
+-- ui["sainnhe/everforest"] = {
+-- lazy = true,
+-- }
+-- ui["kevinhwang91/nvim-hlslens"] = {
+-- 	lazy = true,
+-- 	module = "hlslens",
+-- 	keys = { "/", "?", "*", "#" }, --'n', 'N', '*', '#'
+-- 	config = function()
+-- 		require("modules.ui.hlslens")
+-- 	end,
+-- }
 ui["lukas-reineke/indent-blankline.nvim"] = {
-	opt = true,
+	lazy = true,
 	event = "BufReadPost",
-	after = "nvim-treesitter",
 	config = function()
 		require("modules.ui.indent-blankline")
 	end,
 }
+-- ui["rebelot/kanagawa.nvim"] = {
+-- 	lazy = false,
+-- 	config = function()
+-- 		require("modules.ui.kanagawa")
+-- 	end,
+-- }
 ui["hoob3rt/lualine.nvim"] = {
-	opt = true,
-	after = { "nvim-lspconfig", "lspsaga.nvim", "git-blame.nvim" },
+	lazy = true,
+	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = function()
 		require("modules.ui.lualine")
 	end,
 }
-ui["mvllow/modes.nvim"] = {
-	opt = true,
-	event = "BufReadPost",
-	config = function()
-		require("modules.ui.modes")
-	end,
-}
 ui["zbirenbaum/neodim"] = {
-	opt = true,
+	lazy = true,
 	event = "LspAttach",
-	requires = "nvim-treesitter/nvim-treesitter",
 	config = function()
 		require("modules.ui.neodim")
 	end,
 }
 ui["romainl/vim-cool"] = {
-	opt = true,
+	lazy = true,
 	event = { "CursorMoved", "InsertEnter" },
-	-- after = { "nvim-hlslens" },
 }
 ui["rcarriga/nvim-notify"] = {
-	opt = true,
-	event = { "BufReadPre", "UIEnter" },
-	module = "notify",
+	lazy = true,
+	event = "VeryLazy",
 	config = function()
 		require("modules.ui.notify")
 	end,
 }
-ui["kyazdani42/nvim-web-devicons"] = {
-	opt = true,
-	module = "nvim-web-devicons",
-}
+-- ui["anuvyklack/pretty-fold.nvim"] = { -- not using fold ATM
+-- 	lazy = true,
+-- 	after = { "nvim-treesitter" },
+-- 	config = function()
+-- 		require("modules.ui.pretty-fold")
+-- 	end,
+-- }
 ui["petertriho/nvim-scrollbar"] = {
-	opt = true,
+	lazy = true,
 	event = "BufReadPost",
-	module = "scrollbar.handlers.search",
 	config = function()
 		require("modules.ui.scrollbar")
 	end,
 }
-ui["levouh/tint.nvim"] = {
-	opt = true,
-	event = { "BufReadPost" },
-	config = function()
-		require("modules.ui.tint")
-	end,
-}
+-- ui["folke/styler.nvim"] = {
+-- 	lazy = true,
+-- 	event = "BufReadPost",
+-- 	cmd = "Styler",
+-- 	config = function()
+-- 		require("modules.ui.styler")
+-- 	end,
+-- }
 ui["folke/todo-comments.nvim"] = {
-	opt = true,
+	lazy = true,
 	event = "BufReadPost",
 	config = function()
 		require("modules.ui.todo-comments")
 	end,
 }
 ui["itchyny/vim-highlighturl"] = {
-	opt = true,
+	lazy = true,
 	event = "BufReadPost",
 	config = function()
 		vim.g.highlighturl_guifg = "#8AB4F8"
+	end,
+}
+ui["sainnhe/gruvbox-material"] = {
+	lazy = true,
+	--event = "VimEnter",
+	config = function()
+		require("modules.ui.gruvbox-material")
 	end,
 }
 

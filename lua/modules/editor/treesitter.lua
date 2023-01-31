@@ -16,21 +16,20 @@ require("nvim-treesitter.configs").setup({
 		"html",
 		"javascript",
 		"json",
-		"latex",
+		--"latex",
 		"lua",
 		"make",
 		"markdown",
 		"markdown_inline",
-		"norg",
-		"org",
+		--"norg",
+		--"org",
 		"python",
 		"rust",
 		"regex",
 		"toml",
-		"tsx",
+		--"tsx",
 		"typescript",
-		"typescript",
-		"vim",
+		--"vim",
 		"yaml",
 		"help",
 	},
@@ -47,8 +46,14 @@ require("nvim-treesitter.configs").setup({
 	},
 	highlight = {
 		enable = true,
-		-- only use vim-go's highlight for go type files
-		disable = { "go" },
+		disable = function(ft, bufnr)
+			if vim.tbl_contains({ "vim" }, ft) then
+				return true
+			end
+
+			local ok, is_large_file = pcall(vim.api.nvim_buf_get_var, bufnr, "bigfile_disable_treesitter")
+			return ok and is_large_file
+		end,
 		additional_vim_regex_highlighting = true,
 	},
 	indent = {
@@ -99,13 +104,7 @@ require("nvim-treesitter.configs").setup({
 		enable_autocmd = false,
 	},
 	matchup = { enable = true },
-	-- markid = { enable = true },
 })
-
--- if Dowloading is slow, uncomment and update proxy
-require("nvim-treesitter.install").command_extra_args = {
-	curl = { "--proxy", "http://agent.baidu.com:8118" },
-}
 
 require("nvim-treesitter.install").prefer_git = true
 if use_ssh then

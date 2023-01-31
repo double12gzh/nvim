@@ -23,34 +23,35 @@ dashboard.section.header.opts.hl = "Boolean"
 
 -- Buttons
 dashboard.section.buttons.val = {
-	dashboard.button("f", icons.ui.List .. " Find file", "<cmd>Telescope find_files<cr>"),
-	dashboard.button("w", icons.ui.Telescope .. " Find text", "<cmd>Telescope live_grep<cr>"),
-	dashboard.button("o", icons.ui.History .. " Recent files", "<cmd>Telescope oldfiles<cr>"),
-	dashboard.button("r", icons.ui.Sort .. " File frecency", "<cmd>Telescope frecency<cr>"),
+	dashboard.button("f", icons.documents.Files .. " Find file", "<cmd>Telescope find_files<cr>"),
 	dashboard.button("e", icons.ui.NewFile .. " New file", "<cmd>enew<cr>"),
-	dashboard.button("c", icons.ui.Gear .. " Config", "<cmd>e ~/.config/nvim/init.lua <cr>"),
+	dashboard.button("p", icons.git.Repo .. " Find project", "<cmd>Telescope project<cr>"),
+	dashboard.button("y", icons.ui.Sort .. " File frecency", "<cmd>Telescope frecency<cr>"),
+	dashboard.button("r", icons.ui.History .. " Recent files", "<cmd>Telescope oldfiles<cr>"),
+	dashboard.button("t", icons.ui.List .. " Find text", "<cmd>Telescope live_grep<cr>"),
+	dashboard.button("u", icons.ui.CloudDownload .. " Update", "<cmd>PackerSync<cr>"),
 	dashboard.button("q", icons.ui.SignOut .. " Quit", "<cmd>qa<cr>"),
-	--dashboard.button("y", icons.ui.Sort .. " File frecency", "<cmd>Telescope frecency<cr>"),
-	--dashboard.button("p", icons.git.Repo .. " Find project", "<cmd>Telescope project<cr>"),
-	--dashboard.button("r", icons.ui.History .. " Recent files", "<cmd>Telescope oldfiles<cr>"),
 }
 dashboard.section.buttons.opts.hl = "Keyword"
 
 -- Footer
 local function footer()
+	-- NOTE: requires the fortune-mod package to work
+	-- local handle = io.popen("fortune")
+	-- local fortune = handle:read("*a")
+	-- handle:close()
+	-- return fortune
+	------
+
 	-- Number of plugins
-	local total_plugins = #vim.tbl_keys(packer_plugins)
 	local datetime = os.date("%Y-%m-%d %H:%M:%S")
-	local plugins_text = "    "
-		.. total_plugins
-		.. " plugins"
-		--.. "   v"
-		--.. vim.version().major
-		--.. "."
-		--.. vim.version().minor
-		--.. "."
-		--.. vim.version().patch
-		.. "   "
+	local plugins_text = "    v"
+		.. vim.version().major
+		.. "."
+		.. vim.version().minor
+		.. "."
+		.. vim.version().patch
+		.. "  "
 		.. datetime
 
 	return plugins_text
@@ -75,3 +76,11 @@ dashboard.config.layout = {
 
 dashboard.opts.opts.noautocmd = true
 require("alpha").setup(dashboard.opts)
+
+vim.api.nvim_create_autocmd("User", {
+	pattern = "LazyVimStarted",
+	callback = function()
+		dashboard.section.footer.val = footer()
+		pcall(vim.cmd.AlphaRedraw)
+	end,
+})
