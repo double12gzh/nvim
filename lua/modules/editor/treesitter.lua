@@ -47,7 +47,8 @@ require("nvim-treesitter.configs").setup({
 	highlight = {
 		enable = true,
 		disable = function(ft, bufnr)
-			if vim.tbl_contains({ "vim" }, ft) then
+			-- for go/vim files, use vim-go and vim-ls highlighting
+			if vim.tbl_contains({ "vim", "go" }, ft) then
 				return true
 			end
 
