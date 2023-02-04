@@ -1,177 +1,80 @@
-From debian:stable
+From ubuntu:22.04
 
-LABEL Author="Jeffrey Guan"
+ARG USER=work
+ARG USER_GID=1000
+ARG USER_UID=1000
+ARG PASSWD=work
+ARG HOME=/home/$USER
+ARG DOTFILES=/dotfiles
 
-ENV LC_CTYPE=zh_CN.UTF-8
-ENV LC_ALL=en_US.utf8
-ENV LANGUAGE=en_US:en
-ENV LANG=en_US.utf8
+ARG DEBIAN_FRONTEND=noninteractive
 
-ENV GOPATH="/root/.go"
-ENV GO_VERSION="1.18.9"
-ENV GOPROXY="https://goproxy.cn"
+ENV TZ=Asia/Shanghai
 
-ARG NODEJS_VERSION="19"
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+#COPY ./sources.list /etc/apt/sources.list
 
-ENV NVIM_VERSION="v0.8.1"
+#RUN mkdir -p /etc/apt/sources.list.d/ \
+#		&& echo 'deb [trusted=yes] https://apt.fury.io/ascii-image-converter/ /' | tee /etc/apt/sources.list.d/ascii-image-converter.list
 
-ENV PYTHON3_HOST_PROG="/usr/bin/python3"
-ENV PATH=/usr/local/nvim-linux64/bin:/root/go/bin:/root/.local/bin:/usr/local/go/bin:/root/.go/bin:/root/.cargo/bin:$PATH
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
+		&& echo keyboard-configuration keyboard-configuration/layout select 'English (US)' | debconf-set-selections \
+		&& echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections \
+		&& echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
 
-RUN mkdir -p /root/.config && \
-    mkdir -p /root/.go/bin && \
-    mkdir -p /home/.nvim_app && \
-    mkdir -p /usr/share/fonts/truetype
+RUN DEBIAN_FRONTEND=noninteractive; apt-get clean all && apt-get update \
+		&& apt-get install -y sudo git
 
-WORKDIR /home/.nvim_app
+RUN git clone https://github.com/double12gzh/dotfiles.git $DOTFILES
+RUN mkdir -p /root/.pip && ln -s $DOTFILES/pip/.config/pip/pip.conf /root/.pip/pip.conf
 
-COPY ["fonts/Operator Mono Lig", "/usr/share/fonts/Operator Mono Lig"]
-COPY fonts/Hack /usr/share/fonts/truetype/hack
+RUN sed -i "/ascii-image-converter/d" $DOTFILES/zzz_install_scripts/sys-apps/apt_install.sh \
+		&& sed -i "/wait_for_user/d" $DOTFILES/zzz_install_scripts/config.sh \
+		&& sed -i "s/ADD_TO_SYSTEM_PATH=false/ADD_TO_SYSTEM_PATH=true/g" $DOTFILES/zzz_install_scripts/config.sh
 
-RUN echo "=============== START: Base Installation ==================" && \
-    apt-get clean all && \
-    apt-get update && \
-    apt-get install --no-install-recommends -y \
-    apt-transport-https \
-    autoconf \
-    automake \
-    bash \
-    build-essential \
-    cmake \
-    curl \
-    fontconfig \
-    fzf \
-    gcc \
-    g++ \
-    git \
-    libreadline-dev \
-    locales \
-    make \
-    npm \
-    pkg-config \
-    python3 \
-    ripgrep \
-    ruby-dev \
-    rubygems \
-    shellcheck \
-    yarn \
-    wget \
-    unzip \
-    #latexmk texlive-fonts-extra texlive-fonts-recommended texlive-latex-extra \
-    # [plugin dependency] c/cpp/rust program debugger
-    lldb \
-    # [plugin dependency] for [sql.lua|https://github.com/kkharji/sqlite.lua]
-    sqlite3 libsqlite3-dev \ 
-    # [neovim provider] python
-    python3-neovim python3-dev python3-pip \
-    zsh
+RUN groupadd --gid $USER_GID $USER \
+		&& useradd --uid $USER_UID --gid $USER_GID -m $USER \
+		&& echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER \
+		&& chmod 0440 /etc/sudoers.d/$USER
 
-RUN echo "=============== START: install npm provider ===============" && \
-    npm install npm@latest --location=global && \
-    curl -fsSL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x | bash - && \
-    apt install nodejs --no-install-recommends -y && \
-    rm -rf /var/lib/apt/lists/* && \
-    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash && \
-    echo "export PATH=$PATH" >> /root/.bashrc && \
-    #echo "===========================================================" && \
-    #echo "================ START: Do Zsh Installation ===============" && \
-    #echo "===========================================================" && \
-    CHSH=yes;RUNZSH=no;KEEP_ZSHRC=yes; \
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
-    git clone https://github.com/zsh-users/zsh-autosuggestions \
-        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
-    curl -sfL https://direnv.net/install.sh | bash && touch /root/.dircolors && \
-    #echo "===========================================================" && \
-    #echo "================ START: Do Nvim Installation ==============" && \
-    #echo "===========================================================" && \
-    wget -O /tmp/nvim-linux64.tar.gz \
-        https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux64.tar.gz && \
-    tar -zxf /tmp/nvim-linux64.tar.gz -C /usr/local/ && \
-    chmod a+x /usr/local/nvim-linux64/bin/nvim && \
-    rm -rf /tmp/nvim-linux64.tar.gz && \
-    #echo "===========================================================" && \
-    #echo "================ START: Install rust ======================" && \
-    #echo "===========================================================" && \
-    curl https://sh.rustup.rs -sSf | sh -s -- -y && \
-    #echo "===========================================================" && \
-    #echo "================ START: Install go ========================" && \
-    #echo "===========================================================" && \
-    wget -O go.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
-    tar -xzf go.tar.gz -C /usr/local/ && rm -rf go.tar.gz && \
-    #echo "===========================================================" && \
-    #echo "================ START: Install Dependencies ==============" && \
-    #echo "===========================================================" && \
-    pip3 install --user pep8 black isort beautysh rich klepto wheel && \
-    #echo "===========================================================" && \
-    #echo "================ START: install [neovim provider] python ==" && \
-    #echo "===========================================================" && \
-    pip3 install --user pynvim && pip3 install --upgrade pynvim && \
-    #echo "===========================================================" && \
-    #echo "================ START: install [neovim provider] perl ====" && \
-    #echo "===========================================================" && \
-    wget http://xrl.us/cpanm -O /usr/bin/cpanm && \
-    chmod +x /usr/bin/cpanm && \
-    cpanm -n Neovim::Ext --quiet && \
-    cpanm -n App::cpanminus --quiet && \
-    #echo "===========================================================" && \
-    #echo "================ START: install [neovim provider] ruby ====" && \
-    #echo "===========================================================" && \
-    gem install neovim && \
-    #echo "===========================================================" && \
-    #echo "================ START: install lua =======================" && \
-    #echo "===========================================================" && \
-    curl -R -O http://www.lua.org/ftp/lua-5.3.5.tar.gz && \
-    tar -zxf lua-5.3.5.tar.gz && \
-    rm -rf lua-5.3.5.tar.gz && \
-    cd lua-5.3.5 && make linux test && make install && cd - && \
-    #echo "===========================================================" && \
-    #echo "================ START: install luarocks ==================" && \
-    #echo "===========================================================" && \
-    wget https://luarocks.org/releases/luarocks-3.8.0.tar.gz && \
-    tar zxpf luarocks-3.8.0.tar.gz && rm -rf luarocks-3.8.0.tar.gz && \
-    cd luarocks-3.8.0 && \
-    ./configure --with-lua-include=/usr/local/include && \
-    make && make install && cd - && \
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
-    chmod 777 /usr/share/fonts/truetype/hack/*.ttf && \
-    #echo "===========================================================" && \
-    #echo "================ START: plugin dependency for sql.lua =====" && \
-    #echo "===========================================================" && \
-    luarocks install sqlite && luarocks install luv && \
-    #echo "===========================================================" && \
-    #echo "================ START: install [neovim provider] node ====" && \
-    #echo "===========================================================" && \
-    npm install -g neovim && \
-    #echo "===========================================================" && \
-    #echo "================ START: plugin dep for markdown-preview ===" && \
-    #echo "===========================================================" && \
-    npm install -g tslib && \ 
-    #echo "===========================================================" && \
-    #echo "================ START: dependency ========================" && \
-    #echo "===========================================================" && \
-    cargo install stylua && \
-    cargo install cbfmt && \
-    cargo install tree-sitter-cli && \
-    cargo install fd-find && \
-    go install mvdan.cc/sh/v3/cmd/shfmt@latest && \
-    go install github.com/jesseduffield/lazygit@latest && \
-    luarocks install luautf8 && \
-    npm install -g @fsouza/prettierd && \
-    npm install -g eslint_d && \
-    npm install -g write-good && \
-    npm install -g markdownlint --save-dev
+RUN bash $DOTFILES/zzz_install_scripts/sys-apps/apt_install.sh
 
-RUN git clone --depth 1 https://github.com/double12gzh/nvim.git \
-        $HOME/.config/nvim && \
-    rm -rf /root/.config/nvim/.git && \
-    rm -rf /root/.config/nvim/.github && \
-    rm -rf /root/.config/nvim/fonts && \
-    git clone --depth 1 https://github.com/wbthomason/packer.nvim \
-        ~/.local/share/nvim/site/pack/packer/opt/packer.nvim && \
-    git clone https://github.com/sainnhe/gruvbox-material.git \
-        ~/.local/share/nvim/site/pack/packer/start/gruvbox-material && \
-    nvim --headless -c "autocmd User PackerComplete quitall" -c "PackerSync" && \
-    #gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/ && \
-    echo "- Enjoy It -"
+USER $USER
+WORKDIR $HOME
 
-CMD ["zsh"]
+#ENV PATH=$HOME/tools/qfc/bin
+#ENV PATH=$HOME/tools/ugrep/bin:$PATH
+#ENV PATH=$HOME/tools/treesitter:$PATH
+#ENV PATH=$HOME/tools/tmux:$PATH
+#ENV PATH=$HOME/tools/stow/bin:$PATH
+#ENV PATH=$HOME/tools/nvim/bin:$PATH
+#ENV PATH=$HOME/tools/lnav:$PATH
+#ENV PATH=$HOME/tools/jq:$PATH
+#ENV PATH=$HOME/tools/fzf/bin:$PATH
+#ENV PATH=$HOME/tools/cpufetch:$PATH
+#ENV PATH=$HOME/tools/btop/bin:$PATH
+#ENV PATH=$HOME/.local/bin:$PATH
+#ENV PATH=$HOME/tools/ruby/bin:$PATH
+#ENV PATH=$HOME/tools/php/bin:$PATH
+#ENV PATH=$HOME/tools/perl/bin:$PATH
+#ENV PATH=$HOME/tools/nodejs/bin:$PATH
+#ENV PATH=$HOME/tools/luarocks:$PATH
+#ENV PATH=$HOME/tools/luajit/src:$PATH
+#ENV PATH=$HOME/tools/lua/src:$PATH
+#ENV PATH=$HOME/tools/julia/bin:$PATH
+#ENV PATH=$HOME/tools/java/bin:$PATH
+#ENV PATH=$HOME/go/bin:$PATH
+#ENV PATH=$HOME/tools/golang/bin:$PATH
+#ENV PATH=$HOME/tools/fzy:$PATH
+#ENV PATH=$HOME/tools/anaconda/condabin:$PATH
+#ENV PATH=$HOME/.cargo/bin:$PATH
+#ENV PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+
+RUN cd $DOTFILES/zzz_install_scripts && bash install_lang.sh
+RUN cd $DOTFILES/zzz_install_scripts && bash install_app.sh
+
+RUN mkdir -p $HOME/.config && source $HOME/.bashrc && $HOME/.zshrc \
+		&& git clone https://github.com/double12gzh/nvim.git $HOME/.config/nvim \
+		&& nvim --headless "+Lazy! sync" +qa
+
+CMD ["bash"]
