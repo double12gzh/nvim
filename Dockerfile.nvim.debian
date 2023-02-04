@@ -38,7 +38,7 @@ RUN groupadd --gid $USER_GID $USER \
 		&& chmod 0440 /etc/sudoers.d/$USER
 #USER $USER
 #WORKDIR $HOME
-
+RUN touch $HOME/.zshrc
 RUN bash $DOTFILES/zzz_install_scripts/sys-apps/apt_install.sh
 
 #ENV PATH=$HOME/tools/qfc/bin
