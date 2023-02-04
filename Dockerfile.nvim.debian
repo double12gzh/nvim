@@ -70,9 +70,9 @@ RUN bash $DOTFILES/zzz_install_scripts/sys-apps/apt_install.sh
 #ENV PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
 
 RUN cd $DOTFILES/zzz_install_scripts && bash install_lang.sh
-RUN source $HOME/.bashrc && $HOME/.zshrc && cd $DOTFILES/zzz_install_scripts && bash install_app.sh
+RUN . $HOME/.bashrc && . $HOME/.zshrc && cd $DOTFILES/zzz_install_scripts && bash install_app.sh
 
-RUN mkdir -p $HOME/.config && source $HOME/.bashrc && $HOME/.zshrc \
+RUN mkdir -p $HOME/.config && . $HOME/.bashrc && . $HOME/.zshrc \
 		&& git clone https://github.com/double12gzh/nvim.git $HOME/.config/nvim \
 		&& nvim --headless "+Lazy! sync" +qa
 
