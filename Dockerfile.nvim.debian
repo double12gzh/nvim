@@ -5,7 +5,7 @@ ARG USER_GID=1000
 ARG USER_UID=1000
 ARG PASSWD=work
 ARG HOME=/home/$USER
-ARG DOTFILES=/dotfiles
+ARG DOTFILES=$HOME/dotfiles
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -26,7 +26,7 @@ RUN DEBIAN_FRONTEND=noninteractive; apt-get clean all && apt-get update \
 		&& apt-get install -y sudo git
 
 RUN git clone https://github.com/double12gzh/dotfiles.git $DOTFILES
-RUN mkdir -p /root/.pip && ln -s $DOTFILES/pip/.config/pip/pip.conf /root/.pip/pip.conf
+#RUN mkdir -p /root/.pip && ln -s $DOTFILES/pip/.config/pip/pip.conf /root/.pip/pip.conf
 
 RUN sed -i "/ascii-image-converter/d" $DOTFILES/zzz_install_scripts/sys-apps/apt_install.sh \
 		&& sed -i "/wait_for_user/d" $DOTFILES/zzz_install_scripts/config.sh \
@@ -36,11 +36,10 @@ RUN groupadd --gid $USER_GID $USER \
 		&& useradd --uid $USER_UID --gid $USER_GID -m $USER \
 		&& echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER \
 		&& chmod 0440 /etc/sudoers.d/$USER
-
-RUN bash $DOTFILES/zzz_install_scripts/sys-apps/apt_install.sh
-
 USER $USER
 WORKDIR $HOME
+
+RUN bash $DOTFILES/zzz_install_scripts/sys-apps/apt_install.sh
 
 #ENV PATH=$HOME/tools/qfc/bin
 #ENV PATH=$HOME/tools/ugrep/bin:$PATH
