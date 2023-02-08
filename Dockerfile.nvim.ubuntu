@@ -1,0 +1,76 @@
+FROM ubuntu:22.04
+
+ARG USER=work
+ARG PASSWD=work
+ARG USER_GID=1000
+ARG USER_UID=1000
+ARG HOME=/home/$USER
+
+ARG DOTFILES=$HOME/dotfiles
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV TZ=Asia/Shanghai
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+		&& echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
+		&& echo keyboard-configuration keyboard-configuration/layout select 'English (US)' | debconf-set-selections \
+		&& echo keyboard-configuration keyboard-configuration/layoutcode select 'us' | debconf-set-selections \
+		&& echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections \
+		&& DEBIAN_FRONTEND=noninteractive; apt-get clean all && apt-get update \
+		&& apt-get install -y sudo git zsh \
+		&& groupadd --gid $USER_GID $USER && useradd --uid $USER_UID --gid $USER_GID -m $USER \
+		&& echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER && chmod 0440 /etc/sudoers.d/$USER
+		
+USER $USER
+WORKDIR $HOME
+SHELL ["/usr/bin/zsh", "-c"]
+
+ENV PATH=$HOME/tools/qfc/bin
+ENV PATH=$HOME/tools/ugrep/bin:$PATH
+ENV PATH=$HOME/tools/treesitter:$PATH
+ENV PATH=$HOME/tools/tmux:$PATH
+ENV PATH=$HOME/tools/stow/bin:$PATH
+ENV PATH=$HOME/tools/nvim/bin:$PATH
+ENV PATH=$HOME/tools/lnav:$PATH
+ENV PATH=$HOME/tools/jq:$PATH
+ENV PATH=$HOME/tools/fzf/bin:$PATH
+ENV PATH=$HOME/tools/cpufetch:$PATH
+ENV PATH=$HOME/tools/btop/bin:$PATH
+ENV PATH=$HOME/tools/ruby/bin:$PATH
+ENV PATH=$HOME/tools/php/bin:$PATH
+ENV PATH=$HOME/tools/perl/bin:$PATH
+ENV PATH=$HOME/tools/nodejs/bin:$PATH
+ENV PATH=$HOME/tools/luarocks:$PATH
+ENV PATH=$HOME/tools/luajit/src:$PATH
+ENV PATH=$HOME/tools/lua/src:$PATH
+ENV PATH=$HOME/tools/julia/bin:$PATH
+ENV PATH=$HOME/tools/java/bin:$PATH
+ENV PATH=$HOME/tools/golang/bin:$PATH
+ENV PATH=$HOME/tools/fzy:$PATH
+ENV PATH=$HOME/tools/anaconda/condabin:$HOME/tools/anaconda/bin/:$PATH
+ENV PATH=$HOME/go/bin:$PATH
+ENV PATH=$HOME/.cargo/bin:$PATH
+ENV PATH=$HOME/.local/bin:$PATH
+ENV PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+
+RUN git clone https://github.com/double12gzh/dotfiles.git $DOTFILES \
+		&& sed -i "/ascii-image-converter/d" $DOTFILES/zzz_install_scripts/sys-apps/apt_install.sh \
+		&& sed -i "/wait_for_user/d" $DOTFILES/zzz_install_scripts/config.sh \
+		&& cd $DOTFILES/zzz_install_scripts && bash sys-apps/apt_install.sh \
+		&& cd $DOTFILES/zzz_install_scripts && bash install_lang.sh \
+		&& cd $DOTFILES/zzz_install_scripts && bash install_app.sh \
+		&& npm install neovim --location=global \
+    		&& gem install neovim \
+    		&& cpanm -n Neovim::Ext \
+    		&& cpanm -n App::cpanminus \
+    		&& cpanm -n Test::Output \
+    		&& cpanm -n Test::More
+	
+RUN rm -rf $HOME/{.bashrc,.zshrc,.zshenv,.zsh,packages} && sudo rm -rf /var/lib/apt/lists/*
+   
+RUN cd $DOTFILES && stow alacritty bash batcat cargo dlv fdfind git gotests lazygit lf local luarocks pip shelden ssh starship tmuxp zsh
+
+RUN mkdir -p $HOME/.config && git clone https://github.com/double12gzh/nvim.git $HOME/.config/nvim && nvim --headless "+Lazy! sync" +qa
+
+CMD ["/usr/bin/zsh"]
